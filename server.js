@@ -1,22 +1,28 @@
 const express = require('express')
 const app = express()
-const bodyParser = require('body-parser')
+// const bodyParser = require('body-parser')
+const shortId = require('shortid')
 
 const cors = require('cors')
 
 const mongoose = require('mongoose')
-mongoose.connect(process.env.MLAB_URI || 'mongodb://localhost/exercise-track' )
+mongoose.connect(process.env.MLAB_URI || 'mongodb://localhost/exercise-track' , {useNewUrlParser: true})
 
 app.use(cors())
 
-app.use(bodyParser.urlencoded({extended: false}))
-app.use(bodyParser.json())
+// app.use(bodyParser.urlencoded({extended: false}))
+// app.use(bodyParser.json())
+app.use(express.urlencoded())
 
 
 app.use(express.static('public'))
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
+
+// Use custom API Router
+const apiRouter = require('./routers/api');
+app.use('/api/exercise', apiRouter);
 
 
 // Not found middleware
